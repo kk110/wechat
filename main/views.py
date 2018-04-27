@@ -4,22 +4,29 @@ import hashlib
 token = "RICHRICH"
 # Create your views here.
 def verify(request):
-    data = request.GET
-    echostr = data.get("echostr")
-    signature = data.get('signature')
-    timestamp = data.get('timestamp')
-    nonce = data.get('nonce')
+    echostr = request.GET.get("echostr")
+    signature = request.GET.get('signature')
+    timestamp = request.GET.get('timestamp')
+    nonce = request.GET.get('nonce')
+
+    print('echostr',echostr)
+    print('signature', signature)
+    print('timestamp', timestamp)
+    print('nonce', nonce)
 
     temp = [token,timestamp,nonce]
     temp.sort()
 
     temp = "".join(temp)
+    print('------',temp)
+    temp = temp.encode()
+
     sig = hashlib.sha1(temp).hexdigest()
 
     if sig == signature:
         return HttpResponse(echostr)
     else:
-        return HttpResponse('error', 403)
+        return HttpResponse('error')
 
 
 
